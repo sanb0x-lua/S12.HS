@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Создаем белые линии на фоне
     function createLines() {
         const linesContainer = document.getElementById('lines');
-        const lineCount = 20;
+        const lineCount = 6; // fewer snowflakes per batch
         
         for (let i = 0; i < lineCount; i++) {
             const line = document.createElement('div');
@@ -33,18 +33,9 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
-    // Запускаем создание линий каждые 2 секунды
-    setInterval(createLines, 2000);
+    // Запускаем создание линий каждые 3 секунды
+    setInterval(createLines, 3000);
     createLines(); // Первый запуск
-
-    // Закрывать меню при клике вне его
-    document.addEventListener('click', function(e) {
-        const isClickInsideMenu = dropdownMenu.contains(e.target) || menuBtn.contains(e.target) || languageMenu.contains(e.target);
-        if (!isClickInsideMenu) {
-            dropdownMenu.classList.add('hidden');
-            languageMenu.classList.add('hidden');
-        }
-    });
     
     // Определяем язык и страну пользователя
     function detectLanguageAndCountry() {
@@ -282,6 +273,15 @@ document.addEventListener('DOMContentLoaded', function() {
             applyTranslation(lang);
             languageMenu.classList.add('hidden');
         });
+    });
+
+    // Закрывать меню при клике вне его (перенесено сюда чтобы переменные были определены)
+    document.addEventListener('click', function(e) {
+        const isClickInsideMenu = dropdownMenu.contains(e.target) || menuBtn.contains(e.target) || languageMenu.contains(e.target);
+        if (!isClickInsideMenu) {
+            dropdownMenu.classList.add('hidden');
+            languageMenu.classList.add('hidden');
+        }
     });
     
     // Функционал кнопок скачивания
