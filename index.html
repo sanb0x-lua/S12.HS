@@ -15,6 +15,14 @@
         <header>
             <div class="header-content" style="flex-direction:column;align-items:center;">
                 <h1 class="logo">Sanbox Mods</h1>
+                <div class="auth-controls" style="margin-top:12px; display:flex; gap:10px;">
+                    <button id="loginBtn" class="menu-btn">Вход</button>
+                    <button id="registerBtn" class="menu-btn">Регистрация</button>
+                    <div id="userArea" style="display:none; align-items:center; gap:8px;">
+                        <span id="userDisplay" style="color:#ffb3b3; font-weight:600;"></span>
+                        <button id="logoutBtn" class="menu-btn">Выйти</button>
+                    </div>
+                </div>
             </div>
         </header>
 
@@ -123,5 +131,38 @@
     </div>
 
     <script src="script.js"></script>
+
+    <!-- Auth modals -->
+    <div id="loginModal" class="modal hidden">
+        <div class="modal-inner">
+            <h3>Вход</h3>
+            <label>Имя пользователя</label>
+            <input id="loginUsername" type="text" placeholder="username">
+            <label>Пароль</label>
+            <input id="loginPassword" type="password" placeholder="password">
+            <div style="display:flex;gap:10px;margin-top:12px;">
+                <button id="loginSubmit" class="download-btn">Войти</button>
+                <button id="loginCancel" class="menu-btn">Отмена</button>
+            </div>
+            <p id="loginError" class="info-text" style="margin-top:8px; color:#ffd6d6;"></p>
+        </div>
+    </div>
+
+    <div id="registerModal" class="modal hidden">
+        <div class="modal-inner">
+            <h3>Регистрация</h3>
+            <label>Имя пользователя</label>
+            <input id="regUsername" type="text" placeholder="username">
+            <label>Пароль</label>
+            <input id="regPassword" type="password" placeholder="password">
+            <label>Подтвердите пароль</label>
+            <input id="regConfirm" type="password" placeholder="confirm password">
+            <div style="display:flex;gap:10px;margin-top:12px;">
+                <button id="regSubmit" class="download-btn">Зарегистрироваться</button>
+                <button id="regCancel" class="menu-btn">Отмена</button>
+            </div>
+            <p id="regError" class="info-text" style="margin-top:8px; color:#ffd6d6;"></p>
+        </div>
+    </div>
 </body>
 </html>

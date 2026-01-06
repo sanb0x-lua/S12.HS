@@ -679,9 +679,45 @@ button:focus,
     }
 }
 
+/* Modal (auth) styles */
+.modal {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0,0,0,0.5);
+    z-index: 2000;
+}
+
+.modal.hidden { display: none; }
+
+.modal-inner {
+    background: linear-gradient(180deg, rgba(30,0,0,0.95), rgba(80,0,0,0.98));
+    padding: 20px;
+    border: 2px solid #ff7b7b;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 420px;
+    box-shadow: 0 10px 30px rgba(255,40,40,0.18);
+}
+
+.modal-inner h3 { color: #ffb3b3; margin-bottom: 10px; }
+.modal-inner label { color: #ffd6d6; font-size: 0.95rem; display:block; margin-top:8px; }
+.modal-inner input { width:100%; padding:10px; margin-top:6px; border-radius:8px; border:1px solid rgba(255,120,120,0.18); background:#2a0000; color:#ffd6d6; }
+.modal-inner input::placeholder { color: rgba(255,200,200,0.4); }
+
+.auth-controls .menu-btn { padding:8px 12px; font-size:0.95rem; }
+
+@media (max-width:480px) {
+    .modal-inner { padding:16px; }
+}
+
 /* Use system font for welcome and installation instruction texts (avoid 1s.ttf) */
 #welcomeText,
-.info-text {
+#welcomeText *,
+.info-text,
+.info-text * {
     font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif !important;
-    font-weight: 400;
+    font-weight: 400 !important;
 }

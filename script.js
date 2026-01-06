@@ -225,6 +225,98 @@ function init() {
         setInterval(()=>{ position = (position + 1) % 10000; bg.style.backgroundPosition = `${position}px ${position}px`; }, 60);
     }
     animateBackground();
+
+    // --- Simple client-side auth (localStorage) ---
+    const loginBtn = document.getElementById('loginBtn');
+    const registerBtn = document.getElementById('registerBtn');
+    const logoutBtn = document.getElementById('logoutBtn');
+    const userArea = document.getElementById('userArea');
+    const userDisplay = document.getElementById('userDisplay');
+
+    const loginModal = document.getElementById('loginModal');
+    const registerModal = document.getElementById('registerModal');
+    const loginCancel = document.getElementById('loginCancel');
+    const regCancel = document.getElementById('regCancel');
+
+    const show = el => { if (el) el.classList.remove('hidden'); };
+    const hide = el => { if (el) el.classList.add('hidden'); };
+
+    function sha256hex(str){
+        const enc = new TextEncoder();
+        return crypto.subtle.digest('SHA-256', enc.encode(str)).then(buf => {
+            return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+        });
+    }
+
+    function loadUsers(){
+        try { return JSON.parse(localStorage.getItem('users')||'{}'); } catch(e){ return {}; }
+    }
+    function saveUsers(u){ localStorage.setItem('users', JSON.stringify(u)); }
+
+    async function registerUser(){
+        const u = document.getElementById('regUsername').value.trim();
+        const p = document.getElementById('regPassword').value;
+        const c = document.getElementById('regConfirm').value;
+        const err = document.getElementById('regError');
+        err.textContent='';
+        if (!u) { err.textContent='Введите имя пользователя.'; return; }
+        if (p.length < 6) { err.textContent='Пароль минимум 6 символов.'; return; }
+        if (p !== c) { err.textContent='Пароли не совпадают.'; return; }
+        const users = loadUsers();
+        if (users[u]) { err.textContent='Пользователь уже существует.'; return; }
+        const hash = await sha256hex(p);
+        users[u] = { pass: hash, created: Date.now() };
+        saveUsers(users);
+        localStorage.setItem('currentUser', u);
+        updateAuthUI();
+        hide(registerModal);
+    }
+
+    async function loginUser(){
+        const u = document.getElementById('loginUsername').value.trim();
+        const p = document.getElementById('loginPassword').value;
+        const err = document.getElementById('loginError');
+        err.textContent='';
+        if (!u || !p) { err.textContent='Введите логин и пароль.'; return; }
+        const users = loadUsers();
+        if (!users[u]) { err.textContent='Пользователь не найден.'; return; }
+        const hash = await sha256hex(p);
+        if (hash !== users[u].pass) { err.textContent='Неверный пароль.'; return; }
+        localStorage.setItem('currentUser', u);
+        updateAuthUI();
+        hide(loginModal);
+    }
+
+    function logout(){
+        localStorage.removeItem('currentUser');
+        updateAuthUI();
+    }
+
+    function updateAuthUI(){
+        const cur = localStorage.getItem('currentUser');
+        if (cur){
+            userDisplay.textContent = cur;
+            userArea.style.display = 'flex';
+            if (loginBtn) loginBtn.style.display = 'none';
+            if (registerBtn) registerBtn.style.display = 'none';
+        } else {
+            userArea.style.display = 'none';
+            if (loginBtn) loginBtn.style.display = 'inline-flex';
+            if (registerBtn) registerBtn.style.display = 'inline-flex';
+        }
+    }
+
+    // wire buttons
+    if (loginBtn) loginBtn.addEventListener('click', ()=>{ show(loginModal); });
+    if (registerBtn) registerBtn.addEventListener('click', ()=>{ show(registerModal); });
+    if (loginCancel) loginCancel.addEventListener('click', ()=> hide(loginModal));
+    if (regCancel) regCancel.addEventListener('click', ()=> hide(registerModal));
+    if (document.getElementById('regSubmit')) document.getElementById('regSubmit').addEventListener('click', registerUser);
+    if (document.getElementById('loginSubmit')) document.getElementById('loginSubmit').addEventListener('click', loginUser);
+    if (logoutBtn) logoutBtn.addEventListener('click', logout);
+
+    // initialize auth UI
+    updateAuthUI();
 }
 
 if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
